@@ -10,12 +10,16 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Box, Loader2, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
-export default function LoginPage() {
+import { Suspense } from "react";
+
+function LoginForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const registered = searchParams.get("registered");
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -38,9 +42,6 @@ export default function LoginPage() {
             setLoading(false);
         }
     };
-
-    const searchParams = useSearchParams();
-    const registered = searchParams.get("registered");
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -113,5 +114,13 @@ export default function LoginPage() {
                 </CardFooter>
             </Card>
         </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={<div className="flex justify-center items-center min-h-screen"><Loader2 className="animate-spin" /></div>}>
+            <LoginForm />
+        </Suspense>
     );
 }
